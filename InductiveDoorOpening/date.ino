@@ -40,9 +40,8 @@ void getLidarData( TF* Lidar)
 void Action_detection()
 {
     
-    getLidarData(&Lidar);   //读雷达1数据
-
-   if( abs(Lidar.distance - Lidarinit) > 8 )  //如果和设定的测量范围的差值超过五厘米 
+   getLidarData(&Lidar);   //读雷达1数据
+   if( abs(Lidar.distance - Lidarinit) > 8 )  //如果实际值 和 设定的测量范围的差值超过指定范围 
       {
         ReferenceNum --;
        // digitalWrite(LED_PIN, HIGH);
@@ -64,23 +63,24 @@ void Action_detection()
   if(Lidar.distance < (Lidarinit*Low) )  //被遮挡
   { 
     State = 0x01;  
-
+    TIM_close = closetime ;
     ActionFlag = 1 ;
   } 
   else
   {
     State = 0x02;
-    TIM_close = closetime ;
+    
     ActionFlag = 1 ;
   }
     Serial.print(ReferenceNum);
    Serial.print("  ");
    Serial.print(State);
     Serial.print("  ");
-   Serial.print(State);
+    Serial.print(TIM_close);
+   Serial.print("  ");
+   Serial.print(Lidar.distance );  //TIM_close
    Serial.println();
  
-
 }
 
 

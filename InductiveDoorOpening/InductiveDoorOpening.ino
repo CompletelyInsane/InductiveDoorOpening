@@ -9,8 +9,9 @@
 #include "oled.h"
 
 char str[20]; // 为字符串分配足够的空间 oled 
-hw_timer_t* Timer= NULL;              //定义存放定时器的指针  这个名字不能叫做timer,会和LoRa库里边冲突
+hw_timer_t* Timer= NULL;              //定义存放定时器的指针 
 SSD1306Wire  Display(0x3c, 500000, SDA_OLED, SCL_OLED, GEOMETRY_128_64, RST_OLED); // addr , freq , i2c group , resolution , rst  oled初始化参数
+//定时器中断
 void IRAM_ATTR onTimer();
 
 
@@ -23,28 +24,31 @@ void setup() {
   timerAttachInterrupt(Timer, onTimer, true);  //定时器地址指针，中断函数，触发类型
   timerAlarmWrite(Timer, 1000000, true);       //us，自动重装载 
   timerAlarmEnable(Timer);                     //打开定时器
- 
-    Display.init(); //oled 初始化
-    Display.setFont(ArialMT_Plain_16);//设置字体
+  
+  /*OLED_init*/
+  Display.init(); //oled 初始化
+  Display.setFont(ArialMT_Plain_16);//设置字体
 
+   pinMode(LED_PIN, OUTPUT);                              //LED指示灯
+   //等待正确地接收雷达的数据，读取一个值，作为距离参考
     while(Lidar.receiveComplete == false )    //
     {
-       getLidarData(&Lidar)  ; 
-       Display.drawString(0, 20, "Lidar1 Error");  //X,Y,内容
+       getLidarData(&Lidar) ; 
+       Lidarinit =  Lidar.distance;
+       Display.drawString(0, 20, "Lidar1 Error");  //屏幕显示雷达状态 
        Display.display();  //将缓冲区写入内存
     }
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-Action_detection(); //动作检测
+  Action_detection(); //动作检测
 
-if(!Errorback())  //检测错误
-  if( ActionFlag == 1)
-  {
-    oled_display();     //oled显示
-    ActionFlag = 0;
-  }
+  if(!Errorback())         //循环检测错误，无错误时才可进行下一步
+    if( ActionFlag == 1)   //数据刷新标志位，只有数据刷新时才刷新屏幕显示
+    {
+      oled_display();      //oled显示
+      ActionFlag = 0;      //清除标志位
+    }
 
 }
 
@@ -58,12 +62,11 @@ void IRAM_ATTR onTimer()
     TIM_refer = 0;
    }
 
-  TIM_close --; 
+  TIM_close --;  //开门延迟，门开后，计时一段时间后才关闭
    if(TIM_close < 0)//限制范围
    {
     TIM_close = 0;
    }
-
 }
 
 
