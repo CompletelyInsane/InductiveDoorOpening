@@ -39,8 +39,12 @@ void getLidarData( TF* Lidar)
 
 void Action_detection()
 {
-    
-   getLidarData(&Lidar);   //读雷达1数据
+     for(int i = 0; i < 2 ; i++)
+  {
+    getLidarData(&Lidar);   //读雷达1数据
+    LiderDate[i] = Lidar.distance ;
+  }
+   //getLidarData(&Lidar);   //读雷达1数据
    if( abs(Lidar.distance - Lidarinit) > 8 )  //如果实际值 和 设定的测量范围的差值超过指定范围 
       {
         ReferenceNum --;
@@ -59,8 +63,8 @@ void Action_detection()
     }
 
  
-//
-  if(Lidar.distance < (Lidarinit*Low) )  //被遮挡
+// abs(LiderDate[1]- LiderDate[0])
+  if(LiderDate[1] < ( LiderDate[0]*Low) )  //被遮挡
   { 
     State = 0x01;  
     TIM_close = closetime ;
