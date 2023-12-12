@@ -39,10 +39,12 @@ void getLidarData( TF* Lidar)
 
 void Action_detection()
 {
-     for(int i = 0; i < 2 ; i++)
-  {
     getLidarData(&Lidar);   //读雷达1数据
-    LiderDate[i] = Lidar.distance ;
+    LiderDate[0] = Lidar.distance ;
+   
+   if(LiderDate[1] > ( LiderDate[0]*Low) )  //被遮挡
+  { 
+    
   }
    //getLidarData(&Lidar);   //读雷达1数据
    if( abs(Lidar.distance - Lidarinit) > 8 )  //如果实际值 和 设定的测量范围的差值超过指定范围 
@@ -76,14 +78,24 @@ void Action_detection()
     
     ActionFlag = 1 ;
   }
-    Serial.print(ReferenceNum);
-   Serial.print("  ");
-   Serial.print(State);
-    Serial.print("  ");
-    Serial.print(TIM_close);
-   Serial.print("  ");
-   Serial.print(Lidar.distance );  //TIM_close
-   Serial.println();
+
+  //    for(int i = 0; i < 2 ; i++)
+  // {
+    Serial.print("distance:"); 
+    Serial.print(LiderDate[0]);
+     Serial.print(","); 
+    Serial.println(LiderDate[19]);
+ // }
+
+  
+  //   Serial.print(ReferenceNum);
+  //  Serial.print("  ");
+  //  Serial.print(State);
+  //   Serial.print("  ");
+  //   Serial.print(TIM_close);
+  //  Serial.print("  ");
+  //  Serial.print(Lidar.distance );  //TIM_close
+  //  Serial.println();
  
 }
 

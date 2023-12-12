@@ -7,7 +7,7 @@
 
 // 定义按钮所连接的数字引脚
 const int LED_PIN = 35;
-int LiderDate[2];
+int LiderDate[20];
 //ActionFlag：判断是否刷新OLED显示的标志，State：记录雷达是否被遮挡的标志
 uint8_t  ActionFlag = 1, State  =  0x00;   
 //TIM_refer:定时器传出的用于雷达数据错误时间计算的参数；   Lidarinit：预设检测范围  ReferenceNum；检测范围更新所使用的参数
